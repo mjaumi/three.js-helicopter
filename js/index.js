@@ -55,7 +55,7 @@ const createExtrude = (l, w, clr) => {
 }
 
 // this function is creating new pivot to rotate along object origin
-const createPivot = (mesh, rot) => {
+const createPivot = (mesh) => {
 
     const box = new THREE.Box3().setFromObject(mesh);
     box.getCenter(mesh.position);
@@ -65,10 +65,9 @@ const createPivot = (mesh, rot) => {
     scene.add(pivot);
     pivot.add(mesh);
 
-    pivot.rotation.y = rot;
-
     return pivot;
 }
+
 
 // creating camera
 const camera = new THREE.PerspectiveCamera(
@@ -185,7 +184,7 @@ tCopHold.position.set(0, 160, 0);
 scene.add(tCopHold);
 
 // top copter holder cap
-const tCopHoldCap = createCone(15, 20, 64, 0x00ff00);
+const tCopHoldCap = createCone(15, 20, 500, 0x00ff00);
 tCopHoldCap.rotation.set(0, 0, 0);
 tCopHoldCap.position.set(0, 175, 0);
 scene.add(tCopHoldCap);
@@ -193,14 +192,32 @@ scene.add(tCopHoldCap);
 // top copter first blade
 const tCopFBlade = createExtrude(480, 3, 0x00ff00);
 tCopFBlade.position.set(0, -160, 0);
-const tCopFBladePiv = createPivot(tCopFBlade, Math.PI / 4);
+const tCopFBladePiv = createPivot(tCopFBlade);
+tCopFBladePiv.rotation.y = Math.PI / 4;
 
 // top copter second blade
 const tCopSBlade = createExtrude(480, 3, 0x00ff00);
 tCopSBlade.position.set(0, -160, 0);
-const tCopSBladePiv = createPivot(tCopSBlade, -Math.PI / 4);
+const tCopSBladePiv = createPivot(tCopSBlade);
+tCopSBladePiv.rotation.y = -Math.PI / 4;
 
+// back copter connector
+const bCopCon = createCylinder(10, 10, 30, 64, 0x00ff00);
+bCopCon.rotation.set(Math.PI / 2, 0, 0);
+bCopCon.position.set(430, 130, 20);
+scene.add(bCopCon);
 
+// back copter holder
+const bCopHold = createTorus(10, 7, 30, 200, 0x00ff00);
+bCopHold.rotation.set(0, 0, Math.PI / 2);
+bCopHold.position.set(430, 130, 40);
+scene.add(bCopHold);
+
+// back copter holder cap
+const bCopHoldCap = createCone(15, 20, 500, 0x00ff00);
+bCopHoldCap.rotation.set(Math.PI / 2, 0, 0);
+bCopHoldCap.position.set(430, 130, 50);
+scene.add(bCopHoldCap);
 
 // creating renderer DOM element
 const canvas = document.querySelector("#c");
