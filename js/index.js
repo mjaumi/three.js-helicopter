@@ -15,6 +15,61 @@ const createCylinder = (rt, rb, h, rs, clr) => {
     return new THREE.Mesh(geometry, material);
 }
 
+// this function is creating torus mesh
+const createTorus = (r, t, rs, ts, clr) => {
+    const geometry = new THREE.TorusGeometry(r, t, rs, ts);
+    const material = new THREE.MeshPhongMaterial({ color: clr });
+    return new THREE.Mesh(geometry, material);
+}
+
+// this function is creating torus mesh
+const createCone = (r, h, rs, clr) => {
+    const geometry = new THREE.ConeGeometry(r, h, rs);
+    const material = new THREE.MeshPhongMaterial({ color: clr });
+    return new THREE.Mesh(geometry, material);
+}
+
+// this function is creating torus mesh
+const createExtrude = (l, w, clr) => {
+
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);
+    shape.lineTo(0, w);
+    shape.lineTo(l, w);
+    shape.lineTo(l, 0);
+    shape.lineTo(0, 0);
+
+    const extrudeSettings = {
+        steps: 2,
+        depth: 16,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelOffset: 0,
+        bevelSegments: 1
+    };
+
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    const material = new THREE.MeshPhongMaterial({ color: clr });
+    return new THREE.Mesh(geometry, material);
+}
+
+// this function is creating new pivot to rotate along object origin
+const createPivot = (mesh, rot) => {
+
+    const box = new THREE.Box3().setFromObject(mesh);
+    box.getCenter(mesh.position);
+    mesh.position.multiplyScalar(-1);
+
+    const pivot = new THREE.Group();
+    scene.add(pivot);
+    pivot.add(mesh);
+
+    pivot.rotation.y = rot;
+
+    return pivot;
+}
+
 // creating camera
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -75,6 +130,12 @@ tail.rotation.set(Math.PI / 2, Math.PI / 25, Math.PI / 2);
 tail.position.set(300, 110, 0);
 scene.add(tail);
 
+// back
+const back = createCone(80, 300, 1000, 0x00ff00);
+back.rotation.set(Math.PI / 2, Math.PI / 12, -Math.PI / 2);
+back.position.set(290, 70, 0);
+scene.add(back);
+
 // left foot
 const lFoot = createCapsule(25, 300, 4, 1000, 0x00ff00);
 lFoot.rotation.set(Math.PI / 2, 0, Math.PI / 2);
@@ -111,6 +172,35 @@ rFootBCon.rotation.set(Math.PI / 2, Math.PI / 2, -Math.PI / 2.5);
 rFootBCon.position.set(120, -20, -90);
 scene.add(rFootBCon);
 
+// top copter connector
+const tCopCon = createCylinder(10, 10, 60, 64, 0x00ff00);
+tCopCon.rotation.set(Math.PI / 2, Math.PI / 2, Math.PI / 2);
+tCopCon.position.set(0, 120, 0);
+scene.add(tCopCon);
+
+// top copter holder
+const tCopHold = createTorus(15, 10, 30, 200, 0x00ff00);
+tCopHold.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+tCopHold.position.set(0, 160, 0);
+scene.add(tCopHold);
+
+// top copter holder cap
+const tCopHoldCap = createCone(15, 20, 64, 0x00ff00);
+tCopHoldCap.rotation.set(0, 0, 0);
+tCopHoldCap.position.set(0, 175, 0);
+scene.add(tCopHoldCap);
+
+// top copter first blade
+const tCopFBlade = createExtrude(480, 3, 0x00ff00);
+tCopFBlade.position.set(0, -160, 0);
+const tCopFBladePiv = createPivot(tCopFBlade, Math.PI / 4);
+
+// top copter second blade
+const tCopSBlade = createExtrude(480, 3, 0x00ff00);
+tCopSBlade.position.set(0, -160, 0);
+const tCopSBladePiv = createPivot(tCopSBlade, -Math.PI / 4);
+
+
 
 // creating renderer DOM element
 const canvas = document.querySelector("#c");
@@ -125,7 +215,9 @@ controls.enableDamping = true;
 function animate() {
     requestAnimationFrame(animate);
 
-    //cube.rotation.y += 0.01;
+    tCopFBladePiv.rotation.y += 0.01;
+    tCopSBladePiv.rotation.y += 0.01;
+
     renderer.render(scene, camera);
     controls.update();
 }
