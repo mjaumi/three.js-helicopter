@@ -96,10 +96,7 @@ scene.fog = new THREE.Fog(0xffe5ff, 2, 1);
 scene.background = skyTexture;
 
 // creating the ground
-const groundGeometry = new THREE.PlaneGeometry(
-    2000,
-    2000
-);
+const groundGeometry = new THREE.PlaneGeometry(2000, 2000);
 const groundTexture = new THREE.TextureLoader().load(
     "./textures/ground.jpg",
     (texture) => {
@@ -219,6 +216,21 @@ bCopHoldCap.rotation.set(Math.PI / 2, 0, 0);
 bCopHoldCap.position.set(430, 130, 50);
 scene.add(bCopHoldCap);
 
+// back copter first blade
+const bCopFBlade = createExtrude(150, 3, 0x00ff00);
+bCopFBlade.position.set(0, 0, 0);
+const bCopFBladePiv = createPivot(bCopFBlade);
+bCopFBladePiv.position.set(430, 130, 40);
+bCopFBladePiv.rotation.set(Math.PI / 2, Math.PI / 2, 0);
+
+// top copter second blade
+const bCopSBlade = createExtrude(150, 3, 0x00ff00);
+bCopSBlade.position.set(0, 0, 0);
+const bCopSBladePiv = createPivot(bCopSBlade);
+bCopSBladePiv.position.set(430, 130, 40);
+bCopSBladePiv.rotation.set(Math.PI / 2, 0, 0);
+
+
 // creating renderer DOM element
 const canvas = document.querySelector("#c");
 const renderer = new THREE.WebGLRenderer({ canvas });
@@ -234,6 +246,9 @@ function animate() {
 
     tCopFBladePiv.rotation.y += 0.01;
     tCopSBladePiv.rotation.y += 0.01;
+
+    bCopFBladePiv.rotation.y += 0.01;
+    bCopSBladePiv.rotation.y += 0.01;
 
     renderer.render(scene, camera);
     controls.update();
