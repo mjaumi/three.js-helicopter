@@ -1,6 +1,20 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
 
+// this function is creating capsule mesh
+const createCapsule = (r, l, cs, rs, clr) => {
+    const geometry = new THREE.CapsuleGeometry(r, l, cs, rs);
+    const material = new THREE.MeshPhongMaterial({ color: clr });
+    return new THREE.Mesh(geometry, material);
+}
+
+// this function is creating cylinder mesh
+const createCylinder = (rt, rb, h, rs, clr) => {
+    const geometry = new THREE.CylinderGeometry(rt, rb, h, rs);
+    const material = new THREE.MeshPhongMaterial({ color: clr });
+    return new THREE.Mesh(geometry, material);
+}
+
 // creating camera
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -49,14 +63,53 @@ ground.rotation.x = -Math.PI / 2;
 ground.position.y = -100;
 scene.add(ground);
 
-// nose
-const geometry = new THREE.CapsuleGeometry(40, 5, 4, 1000);
-const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-const nose = new THREE.Mesh(geometry, material);
-nose.rotation.set(-Math.PI / 3, 0, -Math.PI / 3);
-nose.position.set(-10, -20, 0);
-scene.add(nose);
+// body
+const body = createCapsule(90, 300, 4, 1000, 0x00ff00);
+body.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+body.position.set(-10, 40, 0);
+scene.add(body);
 
+// tail
+const tail = createCapsule(25, 300, 4, 1000, 0x00ff00);
+tail.rotation.set(Math.PI / 2, Math.PI / 25, Math.PI / 2);
+tail.position.set(300, 110, 0);
+scene.add(tail);
+
+// left foot
+const lFoot = createCapsule(25, 300, 4, 1000, 0x00ff00);
+lFoot.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+lFoot.position.set(0, -80, 100);
+scene.add(lFoot);
+
+// left foot front connector
+const lFootFCon = createCylinder(10, 10, 120, 64, 0x00ff00);
+lFootFCon.rotation.set(Math.PI / 2, Math.PI / 2, Math.PI / 2.5);
+lFootFCon.position.set(-120, -20, 90);
+scene.add(lFootFCon);
+
+// left foot back connector
+const lFootBCon = createCylinder(10, 10, 120, 64, 0x00ff00);
+lFootBCon.rotation.set(Math.PI / 2, Math.PI / 2, Math.PI / 2.5);
+lFootBCon.position.set(120, -20, 90);
+scene.add(lFootBCon);
+
+// right foot
+const rFoot = createCapsule(25, 300, 4, 1000, 0x00ff00);
+rFoot.rotation.set(Math.PI / 2, 0, Math.PI / 2);
+rFoot.position.set(0, -80, -100);
+scene.add(rFoot);
+
+// left foot front connector
+const rFootFCon = createCylinder(10, 10, 120, 64, 0x00ff00);
+rFootFCon.rotation.set(Math.PI / 2, Math.PI / 2, -Math.PI / 2.5);
+rFootFCon.position.set(-120, -20, -90);
+scene.add(rFootFCon);
+
+// left foot back connector
+const rFootBCon = createCylinder(10, 10, 120, 64, 0x00ff00);
+rFootBCon.rotation.set(Math.PI / 2, Math.PI / 2, -Math.PI / 2.5);
+rFootBCon.position.set(120, -20, -90);
+scene.add(rFootBCon);
 
 
 // creating renderer DOM element
