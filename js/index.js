@@ -30,7 +30,7 @@ const createCone = (r, h, rs, clr) => {
 }
 
 // this function is creating torus mesh
-const createExtrude = (l, w, clr) => {
+const createExtrude = (l, w, d, clr) => {
 
     const shape = new THREE.Shape();
     shape.moveTo(0, 0);
@@ -41,7 +41,7 @@ const createExtrude = (l, w, clr) => {
 
     const extrudeSettings = {
         steps: 2,
-        depth: 16,
+        depth: d,
         bevelEnabled: true,
         bevelThickness: 1,
         bevelSize: 1,
@@ -187,13 +187,13 @@ tCopHoldCap.position.set(0, 175, 0);
 scene.add(tCopHoldCap);
 
 // top copter first blade
-const tCopFBlade = createExtrude(480, 3, 0x00ff00);
+const tCopFBlade = createExtrude(480, 3, 16, 0x00ff00);
 tCopFBlade.position.set(0, -160, 0);
 const tCopFBladePiv = createPivot(tCopFBlade);
 tCopFBladePiv.rotation.y = Math.PI / 4;
 
 // top copter second blade
-const tCopSBlade = createExtrude(480, 3, 0x00ff00);
+const tCopSBlade = createExtrude(480, 3, 16, 0x00ff00);
 tCopSBlade.position.set(0, -160, 0);
 const tCopSBladePiv = createPivot(tCopSBlade);
 tCopSBladePiv.rotation.y = -Math.PI / 4;
@@ -217,18 +217,36 @@ bCopHoldCap.position.set(430, 130, 50);
 scene.add(bCopHoldCap);
 
 // back copter first blade
-const bCopFBlade = createExtrude(150, 3, 0x00ff00);
-bCopFBlade.position.set(0, 0, 0);
+const bCopFBlade = createExtrude(150, 3, 16, 0x00ff00);
 const bCopFBladePiv = createPivot(bCopFBlade);
 bCopFBladePiv.position.set(430, 130, 40);
 bCopFBladePiv.rotation.set(Math.PI / 2, Math.PI / 2, 0);
 
-// top copter second blade
-const bCopSBlade = createExtrude(150, 3, 0x00ff00);
-bCopSBlade.position.set(0, 0, 0);
+// back copter second blade
+const bCopSBlade = createExtrude(150, 3, 16, 0x00ff00);
 const bCopSBladePiv = createPivot(bCopSBlade);
 bCopSBladePiv.position.set(430, 130, 40);
 bCopSBladePiv.rotation.set(Math.PI / 2, 0, 0);
+
+// door
+const door = createExtrude(80, 80, 180, 0x00ff00);
+door.position.set(-160, 20, -90);
+scene.add(door);
+
+// window 1
+const win1 = createExtrude(40, 40, 180, 0x00ff00);
+win1.position.set(-60, 40, -90);
+scene.add(win1);
+
+// window 2
+const win2 = createExtrude(40, 40, 180, 0x00ff00);
+win2.position.set(0, 40, -90);
+scene.add(win2);
+
+// window 2
+const win3 = createExtrude(40, 40, 180, 0x00ff00);
+win3.position.set(60, 40, -90);
+scene.add(win3);
 
 
 // creating renderer DOM element
