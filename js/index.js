@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'OrbitControls';
+import { PointerLockControls } from 'PointerLockControls';
 
 // this function is creating capsule mesh
 const createCapsule = (r, l, cs, rs, texPath) => {
@@ -41,7 +42,6 @@ const createCone = (r, h, rs, texPath) => {
 // this function is creating torus mesh
 const createSphere = (r, ws, hs) => {
     const geometry = new THREE.SphereGeometry(r, ws, hs);
-    const texture = new THREE.TextureLoader().load(texPath);
     const material = new THREE.MeshPhongMaterial({ color: 0x1B212C });
     return new THREE.Mesh(geometry, material);
 }
@@ -285,8 +285,27 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
+const controls = new PointerLockControls(camera, document.body);
+
+// moving camera
+document.onkeydown = (e) => {
+    switch (e.key) {
+        case 'w':
+            controls.moveForward(5);
+            break;
+        case 's':
+            controls.moveForward(-5);
+            break;
+        case 'd':
+            controls.moveRight(5);
+            break;
+        case 'a':
+            controls.moveRight(-5);
+            break;
+        default:
+            break;
+    }
+}
 
 
 function animate() {
@@ -301,7 +320,6 @@ function animate() {
     bCopSBladePiv.rotation.y += 0.01;
 
     renderer.render(scene, camera);
-    controls.update();
 }
 
 animate();
