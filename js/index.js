@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'OrbitControls';
-import { PointerLockControls } from 'PointerLockControls';
+import { FirstPersonControls } from 'FirstPersonControls';
 
 // this function is creating capsule mesh
 const createCapsule = (r, l, cs, rs, texPath) => {
@@ -94,7 +93,6 @@ const createPivot = (mesh) => {
     return pivot;
 }
 
-
 // creating camera
 const camera = new THREE.PerspectiveCamera(
     75,
@@ -102,7 +100,8 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     2000
 );
-camera.position.z = 300;
+camera.position.set(-900, 0, 900);
+camera.rotation.y = -Math.PI / 4;
 
 // creating scene
 const scene = new THREE.Scene();
@@ -118,7 +117,6 @@ scene.add(light);
 
 // adding sky background
 const skyTexture = new THREE.TextureLoader().load("./textures/sky.png");
-scene.fog = new THREE.Fog(0xffe5ff, 2, 1);
 scene.background = skyTexture;
 
 // creating the ground
@@ -285,39 +283,33 @@ const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-const controls = new PointerLockControls(camera, document.body);
+const controls = new FirstPersonControls(camera, renderer.domElement);
 
-// moving camera
-document.onkeydown = (e) => {
-    switch (e.key) {
-        case 'w':
-            controls.moveForward(5);
-            break;
-        case 's':
-            controls.moveForward(-5);
-            break;
-        case 'd':
-            controls.moveRight(5);
-            break;
-        case 'a':
-            controls.moveRight(-5);
-            break;
-        default:
-            break;
-    }
-}
+let rotateLight = false;
 
+// toggling light rotation here
+document.addEventListener('click', () => {
+    rotateLight = !rotateLight;
+});
 
 function animate() {
     requestAnimationFrame(animate);
 
-    tCopHold.rotation.z -= 0.01;
-    tCopFBladePiv.rotation.y += 0.01;
-    tCopSBladePiv.rotation.y += 0.01;
+    tCopHold.rotation.z -= 0.1;
+    tCopFBladePiv.rotation.y += 0.1;
+    tCopSBladePiv.rotation.y += 0.1;
 
-    bCopHold.rotation.z += 0.01;
-    bCopFBladePiv.rotation.y += 0.01;
-    bCopSBladePiv.rotation.y += 0.01;
+    bCopHold.rotation.z += 0.1;
+    bCopFBladePiv.rotation.y += 0.1;
+    bCopSBladePiv.rotation.y += 0.1;
+
+    controls.update(1.2);
+
+    // rotating light source on mouse interaction
+    if (rotateLight) {
+        light.position.x = -1 * Math.sin(Date.now() / 240);
+        light.position.z = 1 * Math.cos(Date.now() / 240);
+    }
 
     renderer.render(scene, camera);
 }
